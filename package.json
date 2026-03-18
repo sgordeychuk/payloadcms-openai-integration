@@ -1,8 +1,17 @@
 {
   "name": "payloadcms-openai-textgen",
   "version": "0.1.0",
-  "description": "AI text generation plugin for Payload CMS using OpenAI",
+  "description": "AI text generation plugin for Payload CMS v3 — adds an OpenAI-powered text generator to the Lexical rich text editor toolbar",
   "license": "MIT",
+  "author": "Sergei Gordeichuk",
+  "homepage": "https://github.com/sgordeychuk/payloadcms-openai-integration#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sgordeychuk/payloadcms-openai-integration.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sgordeychuk/payloadcms-openai-integration/issues"
+  },
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -49,10 +58,18 @@
   "keywords": [
     "payload",
     "payloadcms",
+    "payload-cms",
+    "payload-plugin",
     "plugin",
     "openai",
     "ai",
     "text-generation",
-    "lexical"
+    "content-generation",
+    "lexical",
+    "lexical-editor",
+    "rich-text",
+    "cms",
+    "gpt",
+    "chatgpt"
   ]
 }
