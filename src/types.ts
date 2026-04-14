@@ -10,3 +10,7 @@ export interface AITextGenPluginOptions {
   /** Custom endpoint path (default: '/ai-generate') */
   endpointPath?: string
 }
+
+export interface AIGenerateClientProps {
+  endpointPath: string
+}

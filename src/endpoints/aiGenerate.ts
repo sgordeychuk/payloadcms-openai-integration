@@ -22,10 +22,16 @@ export function createAIGenerateEndpoint(options: AITextGenPluginOptions): Endpo
     endpointPath = '/ai-generate',
   } = options
 
+  let openaiClient: OpenAI | null = null
+
   return {
     path: endpointPath,
     method: 'post',
     handler: async (req) => {
+      if (!req.user) {
+        return Response.json({ error: 'Unauthorized' }, { status: 401 })
+      }
+
       const resolvedApiKey = apiKey ?? process.env.OPENAI_API_KEY
       if (!resolvedApiKey) {
         return Response.json({ error: 'OPENAI_API_KEY is not configured' }, { status: 500 })
@@ -43,16 +49,18 @@ export function createAIGenerateEndpoint(options: AITextGenPluginOptions): Endpo
         return Response.json({ error: 'prompt is required' }, { status: 400 })
       }
 
-      const openai = new OpenAI({ apiKey: resolvedApiKey })
+      if (!openaiClient) {
+        openaiClient = new OpenAI({ apiKey: resolvedApiKey })
+      }
 
       try {
-        const completion = await openai.chat.completions.create({
+        const completion = await openaiClient.chat.completions.create({
           model,
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: prompt },
           ],
-          max_tokens: maxTokens,
+          max_completion_tokens: maxTokens,
         })
 
         const text = completion.choices[0]?.message?.content?.trim() ?? ''

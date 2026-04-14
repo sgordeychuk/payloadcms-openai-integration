@@ -11,18 +11,21 @@ import { $generateNodesFromDOM } from '@payloadcms/richtext-lexical/lexical/html
 import { useLexicalComposerContext } from '@payloadcms/richtext-lexical/lexical/react/LexicalComposerContext'
 import { useLexicalDrawer } from '@payloadcms/richtext-lexical/client'
 import { Drawer, useDrawerSlug } from '@payloadcms/ui'
+import type { AIGenerateClientProps } from '../types.js'
 
 export const OPEN_AI_GENERATE_COMMAND: LexicalCommand<void> = createCommand(
   'OPEN_AI_GENERATE_COMMAND',
 )
 
-export const AIGeneratePlugin: React.FC = () => {
+export const AIGeneratePlugin: React.FC<{ clientProps: AIGenerateClientProps }> = ({ clientProps }) => {
   const [editor] = useLexicalComposerContext()
   const [prompt, setPrompt] = useState('')
   const [isGenerating, setIsGenerating] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+
+  const endpointPath = clientProps?.endpointPath ?? '/ai-generate'
 
   const drawerSlug = useDrawerSlug('ai-generate')
   const { toggleDrawer, closeDrawer } = useLexicalDrawer(drawerSlug, true)
@@ -32,7 +35,6 @@ export const AIGeneratePlugin: React.FC = () => {
       OPEN_AI_GENERATE_COMMAND,
       () => {
         toggleDrawer()
-        // Focus the textarea after the drawer animation completes
         requestAnimationFrame(() => {
           setTimeout(() => {
             textareaRef.current?.focus()
@@ -49,7 +51,7 @@ export const AIGeneratePlugin: React.FC = () => {
     setError(null)
 
     try {
-      const res = await fetch('/api/ai-generate', {
+      const res = await fetch(`/api${endpointPath}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ prompt }),
@@ -78,7 +80,6 @@ export const AIGeneratePlugin: React.FC = () => {
           const hasHtml = /<[a-z][\s\S]*?>/i.test(generatedText)
 
           if (!hasHtml) {
-            // Fallback: plain text insertion (same as before)
             selection.insertText(generatedText)
             return
           }
@@ -105,7 +106,7 @@ export const AIGeneratePlugin: React.FC = () => {
     } finally {
       setIsGenerating(false)
     }
-  }, [editor, closeDrawer, prompt])
+  }, [editor, closeDrawer, prompt, endpointPath])
 
   return (
     <Drawer slug={drawerSlug} title="AI Text Generator">
