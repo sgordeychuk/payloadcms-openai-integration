@@ -1,6 +1,6 @@
 {
   "name": "payloadcms-openai-textgen",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "AI text generation plugin for Payload CMS v3 — adds an OpenAI-powered text generator to the Lexical rich text editor toolbar",
   "license": "MIT",
   "author": "Sergei Gordeichuk",
